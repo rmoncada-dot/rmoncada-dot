@@ -102,18 +102,28 @@ def load_data(file_content):
 
 # Sidebar
 with st.sidebar:
-    st.markdown("### ⚡ Portfolio AM")
-    st.markdown("**Moncada Energy Group**")
-    st.markdown("*Agrigento — Sicilia*")
+    # Logo
+    logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logo.jpg')
+    if os.path.exists(logo_path):
+        st.image(logo_path, use_container_width=True)
+    else:
+        st.markdown("### ⚡ Portfolio AM")
     st.divider()
     uploaded = st.file_uploader("📂 Carica Excel aggiornato", type=['xlsx','xlsm'])
     if uploaded:
         file_bytes = uploaded.read()
         st.success(f"✅ {uploaded.name}")
     else:
-        with open('portfolio_integrato_Q1_2026.xlsx','rb') as f:
-            file_bytes = f.read()
-        st.info("📊 Dati Q1 2026")
+        # Percorso assoluto relativo alla posizione di app.py
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        default_file = os.path.join(base_dir, 'portfolio_integrato_Q1_2026.xlsx')
+        if os.path.exists(default_file):
+            with open(default_file, 'rb') as f:
+                file_bytes = f.read()
+            st.info("📊 Dati Q1 2026")
+        else:
+            st.error("⚠ File Excel non trovato. Carica il file dalla sidebar.")
+            st.stop()
     st.divider()
     st.markdown("**Filtri**")
     show_tipo = st.multiselect("Tipo impianto",["Fotovoltaico","Eolico"],default=["Fotovoltaico","Eolico"])
@@ -131,8 +141,14 @@ n_fv     = df_db['Tipo'].value_counts().get('Fotovoltaico',0)
 n_eo     = df_db['Tipo'].value_counts().get('Eolico',0)
 
 # Header
-st.markdown("# ⚡ Portfolio Rinnovabili — Dashboard Q1 2026")
-st.markdown("**Gruppo Moncada** &nbsp;|&nbsp; 13 Impianti FV + 3 Eolici &nbsp;|&nbsp; Provincia di Agrigento, Sicilia")
+col_logo, col_title = st.columns([1, 4])
+with col_logo:
+    logo_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logo.jpg')
+    if os.path.exists(logo_path):
+        st.image(logo_path, width=180)
+with col_title:
+    st.markdown("# ⚡ Portfolio Rinnovabili — Dashboard Q1 2026")
+    st.markdown("13 Impianti FV + 3 Eolici &nbsp;|&nbsp; Q1 2026")
 st.divider()
 
 def kpi(label, value, sub="", color="blue"):
@@ -345,4 +361,4 @@ with tab5:
         use_container_width=True, hide_index=True)
 
 st.divider()
-st.markdown("<center><small style='color:#8a9ab5'>Portfolio AM Dashboard &nbsp;|&nbsp; Q1 2026 &nbsp;|&nbsp; Moncada Energy Group</small></center>", unsafe_allow_html=True)
+st.markdown("<center><small style='color:#8a9ab5'>Portfolio AM Dashboard &nbsp;|&nbsp; Q1 2026</small></center>", unsafe_allow_html=True)
