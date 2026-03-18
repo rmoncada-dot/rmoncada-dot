@@ -294,8 +294,7 @@ with tab2:
     df_tbl.columns = ['Impianto','Tipo','MWh','Fat. Lordo (€)','Fat. Netto (€)','€/MWh']
     st.dataframe(
         df_tbl.style
-            .format({'MWh':'{:,.1f}','Fat. Lordo (€)':'{:,.0f}','Fat. Netto (€)':'{:,.0f}','€/MWh':'{:,.2f}'})
-            .background_gradient(subset=['Fat. Netto (€)'], cmap='Greens'),
+            .format({'MWh':'{:,.1f}','Fat. Lordo (€)':'{:,.0f}','Fat. Netto (€)':'{:,.0f}','€/MWh':'{:,.2f}'}),
         use_container_width=True, hide_index=True
     )
 
@@ -418,8 +417,7 @@ with tab4:
         st.dataframe(
             df_tbl_ap.style
                 .format({'E Teorica (MWh)':'{:,.1f}','E Reale (MWh)':'{:,.1f}',
-                         'ΔE (MWh)':'{:+,.1f}','ΔE (%)':'{:+.1%}'})
-                .background_gradient(subset=['ΔE (%)'], cmap='RdYlGn_r'),
+                         'ΔE (MWh)':'{:+,.1f}','ΔE (%)':'{:+.1%}'}),
             use_container_width=True, hide_index=True
         )
     else:
@@ -459,8 +457,7 @@ with tab5:
     st.dataframe(
         df_show.style
             .format({'kWp DC':lambda x: f'{x:,.0f}' if pd.notna(x) and x else '—',
-                     'MWh Q1':'{:,.1f}','Fat. Netto Q1 (€)':'{:,.0f}','€/MWh':'{:,.2f}'})
-            .background_gradient(subset=['Fat. Netto Q1 (€)'], cmap='Blues'),
+                     'MWh Q1':'{:,.1f}','Fat. Netto Q1 (€)':'{:,.0f}','€/MWh':'{:,.2f}'}),
         use_container_width=True, hide_index=True
     )
 
