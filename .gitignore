@@ -1,0 +1,11 @@
+# Credenziali — NON caricare mai su GitHub
+credentials.json
+*.json
+secrets.toml
+.streamlit/secrets.toml
+
+# Cache locale
+data/
+__pycache__/
+*.pyc
+.DS_Store
