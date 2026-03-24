@@ -68,7 +68,7 @@ st.markdown("""
 h1,h2,h3{color:#1e2d5f!important;}
 </style>""", unsafe_allow_html=True)
 
-@st.cache_data
+@st.cache_data(ttl=300)  # cache 5 minuti — rilegge Drive automaticamente
 def load_data(fc):
     wb = load_workbook(io.BytesIO(fc), data_only=True)
     wsFD = wb['Fonte_Dati']
@@ -148,18 +148,34 @@ with st.sidebar:
     drive_ok = "gcp_service_account" in st.secrets and "drive" in st.secrets
 
     if drive_ok:
-        # Tenta lettura da Google Drive
-        with st.spinner("Aggiornando da Google Drive..."):
+        # Pulsante aggiornamento manuale
+        col_ref, col_info = st.columns([1, 2])
+        with col_ref:
+            force_refresh = st.button("🔄 Aggiorna", use_container_width=True)
+        if force_refresh:
+            st.cache_data.clear()
+            st.rerun()
+
+        # Carica da Drive
+        with st.spinner("Lettura da Google Drive..."):
             fb_drive, drive_name, drive_mod = load_from_drive()
         if fb_drive:
             fb = fb_drive
             mod_fmt = fmt_drive_date(drive_mod)
             st.success(f"✅ {drive_name}")
-            st.caption(f"Drive — aggiornato il {mod_fmt}")
+            st.caption(f"Aggiornato il {mod_fmt}")
         else:
-            st.warning(f"⚠ Drive non raggiungibile: {drive_name}")
+            st.warning("⚠ Drive non raggiungibile")
+            with st.expander("🔍 Dettaglio errore"):
+                st.code(str(drive_mod))
+                try:
+                    fid = st.secrets["drive"]["file_id"]
+                    st.caption(f"File ID usato: ...{fid[-12:]}")
+                except:
+                    st.caption("File ID: non trovato nei Secrets")
             fb = None
     else:
+        st.warning("⚠ Secrets Google non configurati — usa upload manuale")
         fb = None
 
     # Upload manuale (fallback o aggiornamento forzato)
